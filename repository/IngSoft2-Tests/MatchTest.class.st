@@ -35,7 +35,9 @@ MatchTest >> boardWith10SpacesWithoutEffects [
 
 { #category : #accessing }
 MatchTest >> deckWithOverloadCard [
-	^ Deck deterministicWithCardSequence: { OverloadCard new }
+	^ Deck
+		deterministicWithCardSequence: {OverloadCard new}
+		andAmountOfCards: 50
 ]
 
 { #category : #accessing }
@@ -81,7 +83,9 @@ MatchTest >> testAPlayerWantsToPlayACardHeDoesNotHave [
 	board := self boardWith10SpacesWithoutEffects.
 	overloadCard := OverloadCard new.
 	speedCard := SpeedCard new.
-	deck := Deck deterministicWithCardSequence: {overloadCard}.
+	deck := Deck
+		deterministicWithCardSequence: {overloadCard}
+		andAmountOfCards: 50.
 	dice := Dice deterministicWithFaces: 6 throwing: {2 . 6}.
 	match := Match
 		playedBy:
@@ -99,8 +103,10 @@ MatchTest >> testAPlayerWantsToPlayACardHeDoesNotHave [
 	self
 		should: [ match play: speedCard targeting: jose by: juan ]
 		raise: MatchException
-		withExceptionDo:
-			[ :exception | self assert: exception messageText equals: 'The player Juan do not own SpeedCard' ]
+		withExceptionDo: [ :exception | 
+			self
+				assert: exception messageText
+				equals: 'The player Juan do not own SpeedCard' ]
 ]
 
 { #category : #tests }
@@ -243,7 +249,9 @@ MatchTest >> testAllCardsAndAllEfectsInOneMatch [
 	juan := self playerNamedJuan.
 	fabio := self playerNamedFabio.
 	martin := self playerNamedMartin.
-	dice := Dice deterministicWithFaces: 7 throwing: { 3 . 6 . 7 . 2 . 3 . 6 }.
+	dice := Dice
+		deterministicWithFaces: 7
+		throwing: {3 . 6 . 7 . 2 . 3 . 6}.
 	board := Board
 		withSpaces: 30
 		andDeterministicEffectsGeneratedFrom:
@@ -258,24 +266,46 @@ MatchTest >> testAllCardsAndAllEfectsInOneMatch [
 	cancellationCard := CancellationCard new.
 	repeatCard := RepeatCard new.
 	redoCard := RedoCard new.
-	deck := Deck deterministicWithCardSequence: { overloadCard . speedCard . accelerationCard . cancellationCard . repeatCard . redoCard }.
-	match := Match playedBy: { juan . fabio . martin } throwing: { dice } during: 4 on: board dealingFrom: deck.
+	deck := Deck
+		deterministicWithCardSequence:
+			{overloadCard.
+			speedCard.
+			accelerationCard.
+			cancellationCard.
+			repeatCard.
+			redoCard}
+		andAmountOfCards: 50.
+	match := Match
+		playedBy:
+			{juan.
+			fabio.
+			martin}
+		throwing: {dice}
+		during: 4
+		on: board
+		dealingFrom: deck.
 	match play: overloadCard targeting: fabio by: juan.
-	self assert: (match cardsOf: juan) equals: { speedCard } asOrderedCollection.
+	self
+		assert: (match cardsOf: juan)
+		equals: {speedCard} asOrderedCollection.
 	match playedBy: juan.
 	self assert: (match positionOf: juan) currentSpace equals: 8.
 	match play: accelerationCard by: fabio.
-	self assert: (match cardsOf: fabio) equals: { cancellationCard } asOrderedCollection.
+	self
+		assert: (match cardsOf: fabio)
+		equals: {cancellationCard} asOrderedCollection.
 	match playedBy: fabio.
 	self assert: (match positionOf: fabio) currentSpace equals: 6.
 	match play: redoCard by: martin.
-	self assert: (match cardsOf: martin) equals: { repeatCard } asOrderedCollection.
+	self
+		assert: (match cardsOf: martin)
+		equals: {repeatCard} asOrderedCollection.
 	match playedBy: martin.
 	self assert: (match positionOf: martin) currentSpace equals: 6.
 	match play: speedCard targeting: juan by: juan.
-	self assert: (match cardsOf: juan) equals: {  } asOrderedCollection.
+	self assert: (match cardsOf: juan) equals: {} asOrderedCollection.
 	match play: cancellationCard by: fabio targeting: overloadCard.
-	self assert: (match cardsOf: fabio) equals: {  } asOrderedCollection.
+	self assert: (match cardsOf: fabio) equals: {} asOrderedCollection.
 	match playedBy: juan.
 	self assert: (match positionOf: juan) currentSpace equals: 13.
 	self assert: (match positionOf: fabio) currentSpace equals: 4.
@@ -283,12 +313,12 @@ MatchTest >> testAllCardsAndAllEfectsInOneMatch [
 	match playedBy: fabio.
 	self assert: (match positionOf: fabio) currentSpace equals: 13.
 	match play: repeatCard by: martin.
-	self assert: (match cardsOf: martin) equals: {  } asOrderedCollection.
+	self assert: (match cardsOf: martin) equals: {} asOrderedCollection.
 	self assert: (match positionOf: fabio) currentSpace equals: 17.
 	match playedBy: martin.
 	self assert: (match positionOf: juan) currentSpace equals: 1.
 	self assert: (match positionOf: fabio) currentSpace equals: 1.
-	self assert: (match positionOf: martin) currentSpace equals: 1.
+	self assert: (match positionOf: martin) currentSpace equals: 1
 ]
 
 { #category : #tests }
@@ -297,38 +327,64 @@ MatchTest >> testAllCardsInOneMatch [
 	juan := self playerNamedJuan.
 	fabio := self playerNamedFabio.
 	martin := self playerNamedMartin.
-	dice := Dice deterministicWithFaces: 6 throwing: { 3 }.
-	board := Board withSpaces: 20 andDeterministicEffectsGeneratedFrom: { NoEffect new . SpeedUpEffect new }.
+	dice := Dice deterministicWithFaces: 6 throwing: {3}.
+	board := Board
+		withSpaces: 20
+		andDeterministicEffectsGeneratedFrom:
+			{NoEffect new.
+			SpeedUpEffect new}.
 	overloadCard := OverloadCard new.
 	speedCard := SpeedCard new.
 	accelerationCard := AccelerationCard new.
 	cancellationCard := CancellationCard new.
 	repeatCard := RepeatCard new.
 	redoCard := RedoCard new.
-	deck := Deck deterministicWithCardSequence: { overloadCard . speedCard . accelerationCard . cancellationCard . repeatCard . redoCard }.
-	match := Match playedBy: { juan . fabio . martin } throwing: { dice } during: 4 on: board dealingFrom: deck.
+	deck := Deck
+		deterministicWithCardSequence:
+			{overloadCard.
+			speedCard.
+			accelerationCard.
+			cancellationCard.
+			repeatCard.
+			redoCard}
+		andAmountOfCards: 50.
+	match := Match
+		playedBy:
+			{juan.
+			fabio.
+			martin}
+		throwing: {dice}
+		during: 4
+		on: board
+		dealingFrom: deck.
 	match play: overloadCard targeting: fabio by: juan.
-	self assert: (match cardsOf: juan) equals: { speedCard } asOrderedCollection.
+	self
+		assert: (match cardsOf: juan)
+		equals: {speedCard} asOrderedCollection.
 	match playedBy: juan.
 	self assert: (match positionOf: juan) currentSpace equals: 8.
 	match play: accelerationCard by: fabio.
-	self assert: (match cardsOf: fabio) equals: { cancellationCard } asOrderedCollection.
+	self
+		assert: (match cardsOf: fabio)
+		equals: {cancellationCard} asOrderedCollection.
 	match playedBy: fabio.
 	self assert: (match positionOf: fabio) currentSpace equals: 3.
 	match play: redoCard by: martin.
-	self assert: (match cardsOf: martin) equals: { repeatCard } asOrderedCollection.
+	self
+		assert: (match cardsOf: martin)
+		equals: {repeatCard} asOrderedCollection.
 	match playedBy: martin.
 	self assert: (match positionOf: martin) currentSpace equals: 10.
 	match play: speedCard targeting: juan by: juan.
-	self assert: (match cardsOf: juan) equals: {  } asOrderedCollection.
+	self assert: (match cardsOf: juan) equals: {} asOrderedCollection.
 	match play: cancellationCard by: fabio targeting: overloadCard.
-	self assert: (match cardsOf: fabio) equals: {  } asOrderedCollection.
+	self assert: (match cardsOf: fabio) equals: {} asOrderedCollection.
 	match playedBy: juan.
 	self assert: (match positionOf: juan) currentSpace equals: 18.
 	match playedBy: fabio.
 	self assert: (match positionOf: fabio) currentSpace equals: 12.
 	match play: repeatCard by: martin.
-	self assert: (match cardsOf: martin) equals: {  } asOrderedCollection.
+	self assert: (match cardsOf: martin) equals: {} asOrderedCollection.
 	self assert: (match positionOf: fabio) currentSpace equals: 16
 ]
 
@@ -437,7 +493,8 @@ MatchTest >> testDealingInitialHandToPlayer [
 		deterministicWithCardSequence:
 			{speedCard.
 			overloadCard.
-			redoCard}.
+			redoCard}
+		andAmountOfCards: 50.
 	match := Match
 		playedBy: {juan}
 		throwing: {dice}
@@ -449,6 +506,42 @@ MatchTest >> testDealingInitialHandToPlayer [
 		equals:
 			{speedCard.
 			overloadCard} asOrderedCollection
+]
+
+{ #category : #tests }
+MatchTest >> testDeckRunsOutOfCardsButItGetsShuffled [
+	| match board martin dices players deck firstSpeedCard secondSpeedCard|
+	firstSpeedCard :=SpeedCard new. 
+	secondSpeedCard :=SpeedCard new.
+	deck := Deck deterministicWithCardSequence: { firstSpeedCard. secondSpeedCard } andAmountOfCards: 2.
+	board := Board withSpaces: 20 andDeterministicEffectsGeneratedFrom: { NoEffect new. DealCardEffect new }.
+	martin := self playerNamedMartin.
+	players := OrderedCollection with: martin.
+	dices := OrderedCollection with: (Dice deterministicWithFaces: 6 throwing: #(2 1)).
+	match := Match
+		playedBy: players
+		throwing: dices
+		during: 3
+		on: board
+		dealingFrom: deck.
+	match play: firstSpeedCard by: martin.
+	match play: secondSpeedCard by: martin.
+	match playedBy: martin.
+	self
+		assert: (match positionOf: martin) currentSpace equals: 5;
+		assert: (match positionOf: martin) currentLap equals: 0.
+	match playedBy: martin.
+	self
+		assert: (match positionOf: martin) currentSpace equals: 8;
+		assert: (match positionOf: martin) currentLap equals: 0.
+ 	 self assert: ( deck dealCard ) className equals: 'SpeedCard'.
+	self assert: ( deck dealCard ) className equals: 'SpeedCard'.
+	self
+		should: [ deck dealCard ]
+		raise: MatchException 
+		withExceptionDo: [ :exception | self assert: exception messageText equals: 'There is no cards in the deck' ]
+	
+
 ]
 
 { #category : #tests }
@@ -507,7 +600,9 @@ MatchTest >> testPlayerWantsToPlayACardButHeIsNotPartOfTheMatch [
 	martin := self playerNamedMartin.
 	board := self boardWith10SpacesWithoutEffects.
 	speedCard := SpeedCard new.
-	deck := Deck deterministicWithCardSequence: {speedCard}.
+	deck := Deck
+		deterministicWithCardSequence: {speedCard}
+		andAmountOfCards: 50.
 	dice := Dice deterministicWithFaces: 6 throwing: {5}.
 	match := Match
 		playedBy: {juan}
@@ -518,7 +613,10 @@ MatchTest >> testPlayerWantsToPlayACardButHeIsNotPartOfTheMatch [
 	self
 		should: [ match play: speedCard targeting: juan by: martin ]
 		raise: MatchException
-		withExceptionDo: [ :exception | self assert: exception messageText equals: 'Player ',martin name,' is not playing' ]
+		withExceptionDo: [ :exception | 
+			self
+				assert: exception messageText
+				equals: 'Player ' , martin name , ' is not playing' ]
 ]
 
 { #category : #tests }
@@ -530,7 +628,9 @@ MatchTest >> testPlayerWantsToPlayACardButTheMatchHasFinished [
 	players := OrderedCollection with: fabio.
 	dices := OrderedCollection
 		with: (Dice deterministicWithFaces: 10 throwing: {10}).
-	deck := Deck deterministicWithCardSequence: { accelerationCard }.
+	deck := Deck
+		deterministicWithCardSequence: {accelerationCard}
+		andAmountOfCards: 50.
 	match := Match
 		playedBy: players
 		throwing: dices
@@ -540,8 +640,9 @@ MatchTest >> testPlayerWantsToPlayACardButTheMatchHasFinished [
 	match playedBy: fabio.
 	self
 		should: [ match play: accelerationCard by: fabio ]
-		raise: MatchException 
-		withExceptionDo: [ :exception | self assert: exception messageText equals: 'The match is over' ]
+		raise: MatchException
+		withExceptionDo:
+			[ :exception | self assert: exception messageText equals: 'The match is over' ]
 ]
 
 { #category : #tests }
@@ -551,7 +652,9 @@ MatchTest >> testPlayerWantsToPlayACardToAPlayerThatIsNotPlaying [
 	martin := self playerNamedMartin.
 	board := self boardWith10SpacesWithoutEffects.
 	speedCard := SpeedCard new.
-	deck := Deck deterministicWithCardSequence: {speedCard}.
+	deck := Deck
+		deterministicWithCardSequence: {speedCard}
+		andAmountOfCards: 50.
 	dice := Dice deterministicWithFaces: 6 throwing: {5}.
 	match := Match
 		playedBy: {juan}
@@ -560,9 +663,12 @@ MatchTest >> testPlayerWantsToPlayACardToAPlayerThatIsNotPlaying [
 		on: board
 		dealingFrom: deck.
 	self
-		should: [ match play: speedCard targeting: martin by: juan]
+		should: [ match play: speedCard targeting: martin by: juan ]
 		raise: MatchException
-		withExceptionDo: [ :exception | self assert: exception messageText equals: 'Player ',martin name,' is not playing' ]
+		withExceptionDo: [ :exception | 
+			self
+				assert: exception messageText
+				equals: 'Player ' , martin name , ' is not playing' ]
 ]
 
 { #category : #tests }
@@ -572,7 +678,9 @@ MatchTest >> testPlayerWantsToPlayAPermanentCardButItIsNotHisTurn [
 	martin := self playerNamedMartin.
 	board := self boardWith10SpacesWithoutEffects.
 	speedCard := SpeedCard new.
-	deck := Deck deterministicWithCardSequence: {speedCard}.
+	deck := Deck
+		deterministicWithCardSequence: {speedCard}
+		andAmountOfCards: 50.
 	dice := Dice deterministicWithFaces: 6 throwing: {5}.
 	match := Match
 		playedBy:
@@ -585,7 +693,10 @@ MatchTest >> testPlayerWantsToPlayAPermanentCardButItIsNotHisTurn [
 	self
 		should: [ match play: speedCard targeting: juan by: martin ]
 		raise: MatchException
-		withExceptionDo: [ :exception | self assert: exception messageText equals: 'A player can only play a permanent card in his turn' ]
+		withExceptionDo: [ :exception | 
+			self
+				assert: exception messageText
+				equals: 'A player can only play a permanent card in his turn' ]
 ]
 
 { #category : #tests }

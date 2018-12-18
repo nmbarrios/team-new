@@ -2,7 +2,7 @@ Class {
 	#name : #Deck,
 	#superclass : #Object,
 	#instVars : [
-		'dealingCardStrategy'
+		'cards'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -14,28 +14,44 @@ Deck class >> assertIsEmpty: cardSuccession [
 				signal: 'The card succession must have at least one card' ]
 ]
 
+{ #category : #'creation validation' }
+Deck class >> checkIsValid: anAmountOfCards [
+	anAmountOfCards > 0
+		ifFalse: [ MatchException signal: 'The amount of cards in the deck must be at least 1' ]
+]
+
 { #category : #'instance creation' }
-Deck class >> deterministicWithCardSequence: cardSuccession [
+Deck class >> deterministicWithCardSequence: cardSuccession andAmountOfCards: anAmountOfCards [
 	self assertIsEmpty: cardSuccession.
-	^ self shuffledBy: (DeterministicDeckStrategy using: cardSuccession)
+	self checkIsValid: anAmountOfCards.
+	^ self generatedBy: (DeterministicDeckStrategy using: cardSuccession withAmountOfCards: anAmountOfCards)
 ]
 
 { #category : #'instance creation' }
-Deck class >> random [
-	^ self shuffledBy: RandomDeckStrategy new
-]
-
-{ #category : #'instance creation' }
-Deck class >> shuffledBy: aDeckStrategy [ 
+Deck class >> generatedBy: aDeckStrategy [ 
 	^ self new initializeWith: aDeckStrategy 
+]
+
+{ #category : #'instance creation' }
+Deck class >> randomWithAmountOfCards: anAmountOfCards [
+	self checkIsValid: anAmountOfCards.
+	^ self generatedBy: (RandomDeckStrategy withAmountOfCards: anAmountOfCards)
 ]
 
 { #category : #dealing }
 Deck >> dealCard [
-	^ dealingCardStrategy nextCard
+	| dealedCard |
+	dealedCard:= cards remove: (cards firstIfAbsent: [MatchException
+				signal: 'There is no cards in the deck']).
+	^ dealedCard
+]
+
+{ #category : #generating }
+Deck >> generatedFrom: aDiscardDeck [
+	cards addAll: aDiscardDeck.
 ]
 
 { #category : #initialization }
 Deck >> initializeWith: aDeckStrategy [
-	dealingCardStrategy := aDeckStrategy
+	cards := aDeckStrategy cards asOrderedCollection 
 ]

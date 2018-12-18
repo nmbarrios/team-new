@@ -12,7 +12,8 @@ Class {
 		'lastEffect',
 		'lastCard',
 		'playersCards',
-		'cardsActivated'
+		'cardsActivated',
+		'discardDeck'
 	],
 	#category : #'IngSoft2-Model'
 }
@@ -30,6 +31,11 @@ Match class >> playedBy: thePlayers throwing: gameDices during: aNumberOfLaps on
 { #category : #adding }
 Match >> add: aCard toBeAppliedTo: aPlayer [
 	(cardsActivated at: aCard ifAbsentPut: [ OrderedCollection new ] ) add: aPlayer
+]
+
+{ #category : #adding }
+Match >> addToDiscardDeck: aCard [
+	discardDeck addFromMatch: aCard
 ]
 
 { #category : #description }
@@ -91,6 +97,7 @@ Match >> initializePlayedBy: thePlayers throwing: theDices during: aNumberOfLaps
 	totalLaps := aNumberOfLaps.
 	board := aBoard.
 	deck := aDeck.
+	discardDeck:= DiscardDeck new.
 	positionOfPlayers := Dictionary new.
 	cardsActivated := Dictionary new.
 	playersCards := Dictionary new.
@@ -156,7 +163,8 @@ Match >> play: aCard by: aPlayer [
 	self assert: aPlayer owns: aCard.
 	aCard assertCanBePlayedBy: aPlayer in: self.
 	aCard applyIn: self to: aPlayer.
-	self remove: aCard fromHandOf: aPlayer
+	self remove: aCard fromHandOf: aPlayer.
+	self addToDiscardDeck: aCard.
 ]
 
 { #category : #playing }
@@ -183,7 +191,9 @@ Match >> playedBy: aPlayer [
 	self assertIsPlaying: aPlayer.
 	self assertMatchHasEnded.
 	self move: aPlayer.
-	board applyEffectOf: (self positionOf: aPlayer) currentSpace in: self activatedBy: aPlayer.
+	[ board applyEffectOf: (self positionOf: aPlayer) currentSpace in: self activatedBy: aPlayer ]
+		on: MatchException
+		do: [ self shuffleDiscardDeck ].
 	self changeTurn
 ]
 
@@ -212,6 +222,11 @@ Match >> remove: aCard fromHandOf: aPlayer [
 { #category : #removing }
 Match >> removeActivated: card [
 	cardsActivated removeKey: card ifAbsent: [ MatchException signal: 'There is not a ' , card className , ' activated' ]
+]
+
+{ #category : #playing }
+Match >> shuffleDiscardDeck [
+	deck generatedFrom: (discardDeck shuffle)
 ]
 
 { #category : #playing }
