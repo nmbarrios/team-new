@@ -17,6 +17,7 @@ DeterministicStrategy class >> using: aSequence [
 DeterministicStrategy >> initializeUsing: aSequence [
 	sequence := aSequence.
 	index := 0
+	
 ]
 
 { #category : #generating }

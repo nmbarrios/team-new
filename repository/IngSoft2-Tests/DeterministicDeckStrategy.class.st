@@ -20,4 +20,5 @@ deterministicStrategy := DeterministicStrategy using: aSequence
 { #category : #generating }
 DeterministicDeckStrategy >> nextCard [
 	^ deterministicStrategy next
+	
 ]
