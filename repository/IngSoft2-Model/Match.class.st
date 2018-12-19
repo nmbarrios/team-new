@@ -70,6 +70,11 @@ Match >> cardsOf: aPlayer [
 ]
 
 { #category : #accessing }
+Match >> cardsOfDiscardDeck [
+	^ discardDeck cards
+]
+
+{ #category : #accessing }
 Match >> cardsTargeting: aPlayer [
 	^ (cardsActivated select: [ :targetedPlayers | targetedPlayers includes: aPlayer ]) keys
 ]
@@ -82,11 +87,6 @@ Match >> changeTurn [
 { #category : #playing }
 Match >> dealCardTo: aPlayer [
 	(playersCards at: aPlayer ifAbsent: [ playersCards add: aPlayer -> OrderedCollection new ]) add: deck dealCard
-]
-
-{ #category : #accessing }
-Match >> discardDeckCards [
-	^ discardDeck cards
 ]
 
 { #category : #accessing }
@@ -243,15 +243,14 @@ Match >> removeActivated: card [
 
 { #category : #playing }
 Match >> shuffleDiscardDeck [
-	deck generatedFrom: (discardDeck shuffle)
+	deck generatedFrom: (discardDeck shuffled)
 ]
 
 { #category : #playing }
 Match >> throwDicesAndApplyCardsBy: aPlayer [
-	| roll |
-	roll := aPlayer throw: dices.
-	(self cardsTargeting: aPlayer) do: [ :card | roll := card affectDiceRoll: roll ].
-	^ roll
+	^ (self cardsTargeting: aPlayer)
+		inject: (aPlayer throw: dices)
+		into: [ :roll :card | card affectDiceRoll: roll ]
 ]
 
 { #category : #updating }

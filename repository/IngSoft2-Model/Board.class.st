@@ -33,7 +33,7 @@ Board class >> withRandomEffectsAndSpaces: anAmountOfSpaces [
 ]
 
 { #category : #'instance creation' }
-Board class >> withSpaces: anAmountOfSpaces andDeterministicEffectsGeneratedFrom: effectSuccession [
+Board class >> withSpaces: anAmountOfSpaces andEffectsGeneratedFrom: effectSuccession [
 	self assertIsEmpty: effectSuccession.
 	self checkIsValid: anAmountOfSpaces.
 	^ self

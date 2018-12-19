@@ -8,7 +8,7 @@ Class {
 CardTest >> boardWith10SpacesWithoutEffects [
 	^ Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom: {NoEffect new}
+		andEffectsGeneratedFrom: {NoEffect new}
 ]
 
 { #category : #accessing }
@@ -164,7 +164,7 @@ CardTest >> testPlayerPlaysCancellationCardCancellingRedoCard [
 	juan := self playerNamedJuan.
 	board := Board
 		withSpaces: 15
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			DealCardEffect new}.
 	speedCard := SpeedCard new.
@@ -373,7 +373,7 @@ CardTest >> testPlayerPlaysRedoCardRedoingARedoCard [
 	| juan board dice deck match speedCard firstRedoCard secondRedoCard |
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			DealCardEffect new}.
 	juan := self playerNamedJuan.
@@ -409,7 +409,7 @@ CardTest >> testPlayerPlaysRedoCardRedoingARepeatCard [
 	| juan board dice deck match repeatCard redoCard |
 	board := Board
 		withSpaces: 15
-		andDeterministicEffectsGeneratedFrom: {SpeedUpEffect new}.
+		andEffectsGeneratedFrom: {SpeedUpEffect new}.
 	juan := self playerNamedJuan.
 	repeatCard := RepeatCard new.
 	redoCard := RedoCard new.
@@ -527,7 +527,7 @@ CardTest >> testPlayerPlaysRepeatCard [
 	juan := self playerNamedJuan.
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom: {SpeedUpEffect new}.
+		andEffectsGeneratedFrom: {SpeedUpEffect new}.
 	speedCard := SpeedCard new.
 	repeatCard := RepeatCard new.
 	deck := Deck
@@ -554,7 +554,7 @@ CardTest >> testPlayerPlaysRepeatCardButNoOneThrowedDices [
 	juan := self playerNamedJuan.
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom: {SpeedUpEffect new}.
+		andEffectsGeneratedFrom: {SpeedUpEffect new}.
 	repeatCard := RepeatCard new.
 	speedCard := SpeedCard new.
 	deck := Deck

@@ -15,7 +15,7 @@ DiscardDeckTest >> testAddingCardsAndShufflingADiscardDeck [
 		addFromMatch: speedCard;
 		addFromMatch: overloadCard;
 		addFromMatch: accelerationCard.
-	deckShuffled := discardDeck shuffle.
+	deckShuffled := discardDeck shuffled.
 	self
 		assert:
 			((deckShuffled includes: speedCard)

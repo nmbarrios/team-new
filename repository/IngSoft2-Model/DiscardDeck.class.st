@@ -15,7 +15,7 @@ DiscardDeck >> addFromMatch: aCard [
 { #category : #description }
 DiscardDeck >> assertDiscardDeckIsEmpty [
 	cards isEmpty
-	ifTrue:[MatchException signal:'You can not shuffle a discard deck with no cards']
+		ifTrue: [ MatchException signal: 'You can not shuffle a discard deck with no cards' ]
 ]
 
 { #category : #accessing }
@@ -29,10 +29,10 @@ DiscardDeck >> initialize [
 ]
 
 { #category : #shuffling }
-DiscardDeck >> shuffle [
+DiscardDeck >> shuffled [
 	| cardsShuffled |
 	self assertDiscardDeckIsEmpty.
-	cardsShuffled := cards shuffled.
+	cardsShuffled := cards shuffled asOrderedCollection.
 	cards removeAll.
 	^ cardsShuffled
 ]

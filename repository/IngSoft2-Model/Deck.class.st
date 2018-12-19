@@ -24,7 +24,7 @@ Deck class >> checkIsValid: anAmountOfCards [
 Deck class >> deterministicWithCardSequence: cardSuccession andAmountOfCards: anAmountOfCards [
 	self assertIsEmpty: cardSuccession.
 	self checkIsValid: anAmountOfCards.
-	^ self generatedBy: (DeterministicDeckStrategy using: cardSuccession withAmountOfCards: anAmountOfCards)
+	^ self generatedBy: (DeterministicDeckStrategy using: cardSuccession withSize: anAmountOfCards)
 ]
 
 { #category : #'instance creation' }
@@ -35,15 +35,12 @@ Deck class >> generatedBy: aDeckStrategy [
 { #category : #'instance creation' }
 Deck class >> randomWithAmountOfCards: anAmountOfCards [
 	self checkIsValid: anAmountOfCards.
-	^ self generatedBy: (RandomDeckStrategy withAmountOfCards: anAmountOfCards)
+	^ self generatedBy: (RandomDeckStrategy withSize: anAmountOfCards)
 ]
 
 { #category : #dealing }
 Deck >> dealCard [
-	| dealedCard |
-	dealedCard := cards
-		remove: (cards firstIfAbsent: [ MatchException signal: 'There is no cards in the deck' ]).
-	^ dealedCard
+	^ cards remove: (cards firstIfAbsent: [ MatchException signal: 'There is no cards in the deck' ])
 ]
 
 { #category : #generating }
