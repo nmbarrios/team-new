@@ -5,5 +5,7 @@ Class {
 }
 
 { #category : #applying }
-NoneCard >> redoIn: aMatch to: aPlayer by: aRedoCard [ 
+NoneCard >> redoIn: aMatch to: aPlayer by: aRedoCard [
+	aMatch addToDiscardDeck: aRedoCard.
+	aMatch updateLastCard: aRedoCard
 ]

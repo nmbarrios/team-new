@@ -41,8 +41,8 @@ Deck class >> randomWithAmountOfCards: anAmountOfCards [
 { #category : #dealing }
 Deck >> dealCard [
 	| dealedCard |
-	dealedCard:= cards remove: (cards firstIfAbsent: [MatchException
-				signal: 'There is no cards in the deck']).
+	dealedCard := cards
+		remove: (cards firstIfAbsent: [ MatchException signal: 'There is no cards in the deck' ]).
 	^ dealedCard
 ]
 

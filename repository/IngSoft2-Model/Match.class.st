@@ -66,7 +66,7 @@ Match >> assertTurnBelongsTo: aPlayer [
 { #category : #accessing }
 Match >> cardsOf: aPlayer [
 	self assertIsPlaying: aPlayer.
-	^ playersCards at: aPlayer ifAbsentPut: [ OrderedCollection with: deck dealCard with: deck dealCard ]
+	^ playersCards at: aPlayer
 ]
 
 { #category : #accessing }
@@ -80,8 +80,13 @@ Match >> changeTurn [
 ]
 
 { #category : #playing }
-Match >> dealCardTo: aPlayer [ 
-	(playersCards at:aPlayer) add: deck dealCard.
+Match >> dealCardTo: aPlayer [
+	(playersCards at: aPlayer ifAbsent: [ playersCards add: aPlayer -> OrderedCollection new ]) add: deck dealCard
+]
+
+{ #category : #accessing }
+Match >> discardDeckCards [
+	^ discardDeck cards
 ]
 
 { #category : #accessing }
@@ -97,10 +102,19 @@ Match >> initializePlayedBy: thePlayers throwing: theDices during: aNumberOfLaps
 	totalLaps := aNumberOfLaps.
 	board := aBoard.
 	deck := aDeck.
-	discardDeck:= DiscardDeck new.
+	discardDeck := DiscardDeck new.
 	positionOfPlayers := Dictionary new.
 	cardsActivated := Dictionary new.
 	playersCards := Dictionary new.
+	players
+		do: [ :player | 
+			playersCards at: player put: OrderedCollection new.
+			[ (playersCards at: player) add: deck dealCard ]
+				on: MatchException
+				do: [  ].
+			[ (playersCards at: player) add: deck dealCard ]
+				on: MatchException
+				do: [  ] ].
 	lastCard := NoneCard new.
 	lastEffect := players first -> NoEffect new
 ]
@@ -164,7 +178,7 @@ Match >> play: aCard by: aPlayer [
 	aCard assertCanBePlayedBy: aPlayer in: self.
 	aCard applyIn: self to: aPlayer.
 	self remove: aCard fromHandOf: aPlayer.
-	self addToDiscardDeck: aCard.
+	
 ]
 
 { #category : #playing }
@@ -193,7 +207,10 @@ Match >> playedBy: aPlayer [
 	self move: aPlayer.
 	[ board applyEffectOf: (self positionOf: aPlayer) currentSpace in: self activatedBy: aPlayer ]
 		on: MatchException
-		do: [ self shuffleDiscardDeck ].
+		do: [ [ self shuffleDiscardDeck.
+			self dealCardTo: aPlayer ]
+				on: MatchException
+				do: [  ] ].
 	self changeTurn
 ]
 

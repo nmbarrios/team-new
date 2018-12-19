@@ -8,8 +8,19 @@ Class {
 }
 
 { #category : #adding }
-DiscardDeck >> addFromMatch: aCard [ 
-	cards add:aCard.
+DiscardDeck >> addFromMatch: aCard [
+	cards add: aCard
+]
+
+{ #category : #description }
+DiscardDeck >> assertDiscardDeckIsEmpty [
+	cards isEmpty
+	ifTrue:[MatchException signal:'You can not shuffle a discard deck with no cards']
+]
+
+{ #category : #accessing }
+DiscardDeck >> cards [
+	^ cards
 ]
 
 { #category : #initialization }
@@ -20,7 +31,8 @@ DiscardDeck >> initialize [
 { #category : #shuffling }
 DiscardDeck >> shuffle [
 	| cardsShuffled |
-	cardsShuffled:= OrderedCollection newFrom: (cards shuffled).
+	self assertDiscardDeckIsEmpty.
+	cardsShuffled := cards shuffled.
 	cards removeAll.
 	^ cardsShuffled
 ]
