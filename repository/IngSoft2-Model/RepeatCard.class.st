@@ -7,11 +7,13 @@ Class {
 { #category : #applying }
 RepeatCard >> applyIn: aMatch to: aPlayer [
 	aMatch lastEffect turnOnEffectAt: aMatch activatedBy: aMatch lastEffectTarget.
-	aMatch updateLastCard: self
+	aMatch updateLastCard: self.
+	aMatch addToDiscardDeck: self.
 ]
 
 { #category : #applying }
 RepeatCard >> redoIn: aMatch to: aPlayer by: aRedoCard [ 
 	aMatch lastEffect turnOnEffectAt: aMatch activatedBy: aMatch lastEffectTarget.
-	aMatch updateLastCard: aRedoCard
+	aMatch updateLastCard: aRedoCard.
+	aMatch addToDiscardDeck: aRedoCard.
 ]

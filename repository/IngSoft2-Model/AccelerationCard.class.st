@@ -18,5 +18,5 @@ AccelerationCard >> applyIn: aMatch to: aPlayer [
 { #category : #applying }
 AccelerationCard >> redoIn: aMatch to: aPlayer by:aRedoCard [
 	aMatch players do: [ :player | aMatch add: aRedoCard toBeAppliedTo: player ].
-	aMatch updateLastCard: aRedoCard
+	aMatch updateLastCard: aRedoCard.
 ]
