@@ -6,7 +6,9 @@ Class {
 
 { #category : #accessing }
 EffectTest >> deckWithOverloadCard [
-	^ Deck deterministicWithCardSequence: { OverloadCard new }
+	^ Deck
+		deterministicWithCardSequence: {OverloadCard new}
+		andAmountOfCards: 50
 ]
 
 { #category : #tests }
@@ -68,7 +70,8 @@ EffectTest >> testPlayerActivatesGetCardEffect [
 		deterministicWithCardSequence:
 			{overloadCard.
 			speedCard.
-			redoCard}.
+			redoCard}
+		andAmountOfCards: 50.
 	board := Board
 		withSpaces: 10
 		andDeterministicEffectsGeneratedFrom:
@@ -76,7 +79,8 @@ EffectTest >> testPlayerActivatesGetCardEffect [
 			DealCardEffect new}.
 	matias := Player named: 'Matias'.
 	players := OrderedCollection with: matias.
-	dices := OrderedCollection with: (Dice deterministicWithFaces: 5 throwing: #(5)).
+	dices := OrderedCollection
+		with: (Dice deterministicWithFaces: 5 throwing: #(5)).
 	match := Match
 		playedBy: players
 		throwing: dices

@@ -7,11 +7,16 @@ Class {
 { #category : #applying }
 CancellationCard >> applyIn: aMatch to: aCard [
 	aCard cancelledIn: aMatch.
-	aMatch updateLastCard: self
+	aMatch updateLastCard: self.
+	aMatch addToDiscardDeck: aCard.
+	aMatch addToDiscardDeck: self.
+	
 ]
 
 { #category : #applying }
-CancellationCard >> redoIn: aMatch to: aCard by: aRedoCard [ 
+CancellationCard >> redoIn: aMatch to: aCard by: aRedoCard [
 	aCard cancelledIn: aMatch.
-	aMatch updateLastCard: aRedoCard
+	aMatch updateLastCard: aRedoCard.
+	aMatch addToDiscardDeck: aCard.
+	aMatch addToDiscardDeck: aRedoCard
 ]
