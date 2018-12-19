@@ -12,8 +12,8 @@ Class {
 }
 
 { #category : #'instance creation' }
-RandomDeckStrategy class >> withAmountOfCards: anAmountOfCards [
-^ self new initializeWithAmountOfCards: anAmountOfCards.
+RandomDeckStrategy class >> withSize: anAmountOfCards [
+^ self new initializeWithSize: anAmountOfCards.
 ]
 
 { #category : #accessing }
@@ -22,7 +22,7 @@ RandomDeckStrategy >> cards [
 ]
 
 { #category : #initialization }
-RandomDeckStrategy >> initializeWithAmountOfCards: anAmountOfCards [
+RandomDeckStrategy >> initializeWithSize: anAmountOfCards [
 	cards := OrderedCollection new
 		add: RedoCard new;
 		add: RepeatCard new;

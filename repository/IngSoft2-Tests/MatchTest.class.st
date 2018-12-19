@@ -30,7 +30,7 @@ Class {
 MatchTest >> boardWith10SpacesWithoutEffects [
 	^ Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom: {NoEffect new}
+		andEffectsGeneratedFrom: {NoEffect new}
 ]
 
 { #category : #accessing }
@@ -116,7 +116,7 @@ MatchTest >> testAPlayerWantsToPlayButHeIsNotPartOfTheMatch [
 	dices := OrderedCollection with: (Dice deterministicWithFaces: 5 throwing: #(5)).
 	board := Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			AtomicBombEffect new}.
 	fabio := self playerNamedFabio.
@@ -141,7 +141,7 @@ MatchTest >> testAPlayerWantsToPlayWhenItIsNotHisTurn [
 	deck := self deckWithOverloadCard.
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			AtomicBombEffect new}.
 	martin := self playerNamedMartin.
@@ -254,7 +254,7 @@ MatchTest >> testAllCardsAndAllEfectsInOneMatch [
 		throwing: {3 . 6 . 7 . 2 . 3 . 6}.
 	board := Board
 		withSpaces: 30
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			AtomicBombEffect new.
 			(MoonWalkEffect moving: 2).
@@ -330,7 +330,7 @@ MatchTest >> testAllCardsInOneMatch [
 	dice := Dice deterministicWithFaces: 6 throwing: {3}.
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			SpeedUpEffect new}.
 	overloadCard := OverloadCard new.
@@ -397,7 +397,7 @@ MatchTest >> testAllEffectsInOneMatch [
 		with: (Dice deterministicWithFaces: 4 throwing: #(2 4 2 1 2)).
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			AtomicBombEffect new.
 			(MoonWalkEffect moving: 2).
@@ -438,7 +438,7 @@ MatchTest >> testAskingAPositionOfPlayerThatIsNotPlaying [
 	dices := OrderedCollection with: (Dice deterministicWithFaces: 5 throwing: #(5)).
 	board := Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			AtomicBombEffect new}.
 	fabio := self playerNamedFabio.
@@ -464,7 +464,7 @@ MatchTest >> testCreatingMatchAndAllPlayersStartAtSpace1 [
 	dices := OrderedCollection with: (Dice deterministicWithFaces: 5 throwing: #(1)).
 	board := Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			AtomicBombEffect new}.
 	fabio := self playerNamedFabio.
@@ -520,7 +520,7 @@ MatchTest >> testDeckRunsOutOfCardsAndDiscardDeckDoesNotHaveCards [
 		andAmountOfCards: 2.
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			DealCardEffect new}.
 	juan := self playerNamedJuan.
@@ -539,14 +539,14 @@ MatchTest >> testDeckRunsOutOfCardsAndDiscardDeckDoesNotHaveCards [
 	self
 		assert: (match positionOf: martin) currentSpace equals: 4;
 		assert: (match positionOf: martin) currentLap equals: 0.
-	self assert: match discardDeckCards equals: {} asOrderedCollection.
+	self assert: match cardsOfDiscardDeck equals: {} asOrderedCollection.
 	self assert: (match cardsOf: martin) equals: {} asOrderedCollection.
 	self assert: (match cardsOf: juan) equals: {} asOrderedCollection.
 	match playedBy: juan.
 	self
 		assert: (match positionOf: juan) currentSpace equals: 4;
 		assert: (match positionOf: juan) currentLap equals: 0.
-	self assert: match discardDeckCards equals: {} asOrderedCollection.
+	self assert: match cardsOfDiscardDeck equals: {} asOrderedCollection.
 	self assert: (match cardsOf: martin) equals: {} asOrderedCollection.
 	self assert: (match cardsOf: juan) equals: {} asOrderedCollection
 ]
@@ -563,7 +563,7 @@ MatchTest >> testDeckRunsOutOfCardsButItGetsShuffled [
 		andAmountOfCards: 2.
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			DealCardEffect new}.
 	martin := self playerNamedMartin.
@@ -606,7 +606,7 @@ MatchTest >> testNoPlayerPlaysAndThereIsNoWinner [
 	deck := self deckWithOverloadCard.
 	board := Board
 		withSpaces: 30
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			AtomicBombEffect new}.
 	mateo := Player named: 'Mateo'.
@@ -650,7 +650,7 @@ MatchTest >> testOnlyInstantCardsAreDiscardedInstantlyWhenPlayed [
 		andAmountOfCards: 10.
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			DealCardEffect new}.
 	martin := self playerNamedMartin.
@@ -663,10 +663,10 @@ MatchTest >> testOnlyInstantCardsAreDiscardedInstantlyWhenPlayed [
 		on: board
 		dealingFrom: deck.
 	match play: redoCard by: martin.
-	self assert: match discardDeckCards equals: {redoCard} asOrderedCollection.
+	self assert: match cardsOfDiscardDeck equals: {redoCard} asOrderedCollection.
 	match play: repeatCard by: martin.
 	self
-		assert: match discardDeckCards
+		assert: match cardsOfDiscardDeck
 		equals:
 			{redoCard.
 			repeatCard} asOrderedCollection.
@@ -679,14 +679,14 @@ MatchTest >> testOnlyInstantCardsAreDiscardedInstantlyWhenPlayed [
 		assert: (match positionOf: martin) currentSpace equals: 4;
 		assert: (match positionOf: martin) currentLap equals: 0.
 	match play: speedCard by: martin.
-	self assert: (match discardDeckCards includes: speedCard) not.
+	self deny:(match cardsOfDiscardDeck includes: speedCard).
 	match playedBy: martin.
 	self
 		assert: (match positionOf: martin) currentSpace equals: 6;
 		assert: (match positionOf: martin) currentLap equals: 0.
 	match play: cancellationCard by: martin targeting: speedCard.
 	self
-		assert: match discardDeckCards
+		assert: match cardsOfDiscardDeck
 		equals:
 			{redoCard.
 			repeatCard.
@@ -697,15 +697,15 @@ MatchTest >> testOnlyInstantCardsAreDiscardedInstantlyWhenPlayed [
 		assert: (match positionOf: martin) currentSpace equals: 8;
 		assert: (match positionOf: martin) currentLap equals: 0.
 	match play: accelerationCard by: martin.
-	self assert: (match discardDeckCards includes: accelerationCard) not.
+	self deny: (match cardsOfDiscardDeck includes: accelerationCard) .
 	match playedBy: martin.
 	self
 		assert: (match positionOf: martin) currentSpace equals: 10;
 		assert: (match positionOf: martin) currentLap equals: 0.
 	match play: overloadCard by: martin.
-	self assert: (match discardDeckCards includes: overloadCard) not.
+	self deny: (match cardsOfDiscardDeck includes: overloadCard).
 	self
-		assert: match discardDeckCards
+		assert: match cardsOfDiscardDeck
 		equals:
 			{redoCard.
 			repeatCard.
@@ -733,7 +733,7 @@ MatchTest >> testPermanentCardsAreSentToDiscardDeckByCancellationCard [
 		andAmountOfCards: 10.
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			DealCardEffect new}.
 	martin := self playerNamedMartin.
@@ -751,16 +751,16 @@ MatchTest >> testPermanentCardsAreSentToDiscardDeckByCancellationCard [
 	self
 		assert: (match positionOf: martin) currentSpace equals: 4;
 		assert: (match positionOf: martin) currentLap equals: 0.
-	self assert: match discardDeckCards isEmpty.
+	self assert: match cardsOfDiscardDeck isEmpty.
 	match play: overloadCard targeting: martin by: martin.
 	match playedBy: martin.
 	self
 		assert: (match positionOf: martin) currentSpace equals: 6;
 		assert: (match positionOf: martin) currentLap equals: 0.
-	self assert: match discardDeckCards isEmpty.
+	self assert: match cardsOfDiscardDeck isEmpty.
 	match play: firstCancellationCard by: martin targeting: speedCard.
 	self
-		assert: match discardDeckCards
+		assert: match cardsOfDiscardDeck
 		equals:
 			{speedCard.
 			firstCancellationCard} asOrderedCollection.
@@ -770,7 +770,7 @@ MatchTest >> testPermanentCardsAreSentToDiscardDeckByCancellationCard [
 		assert: (match positionOf: martin) currentLap equals: 0.
 	match play: secondCancellationCard by: martin targeting: accelerationCard.
 	self
-		assert: match discardDeckCards
+		assert: match cardsOfDiscardDeck
 		equals:
 			{speedCard.
 			firstCancellationCard.
@@ -782,7 +782,7 @@ MatchTest >> testPermanentCardsAreSentToDiscardDeckByCancellationCard [
 		assert: (match positionOf: martin) currentLap equals: 0.
 	match play: redoCard by: martin targeting: overloadCard.
 	self
-		assert: match discardDeckCards
+		assert: match cardsOfDiscardDeck
 		equals:
 			{speedCard.
 			firstCancellationCard.
@@ -818,7 +818,7 @@ MatchTest >> testPlayerPlaysACardFromDeckShuffled [
 	deck := Deck deterministicWithCardSequence: {repeatCard} andAmountOfCards: 1.
 	board := Board
 		withSpaces: 20
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{AtomicBombEffect new.
 			DealCardEffect new}.
 	martin := self playerNamedMartin.
@@ -1099,7 +1099,7 @@ MatchTest >> testWhenMatchIsCreatedWithOnePlayerItIsHisTurn [
 	dices := OrderedCollection with: (Dice deterministicWithFaces: 5 throwing: #(1)).
 	board := Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			AtomicBombEffect new}.
 	matias := Player named: 'Matias'.

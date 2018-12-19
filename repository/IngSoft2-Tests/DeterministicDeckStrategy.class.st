@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-DeterministicDeckStrategy class >> using: aSequence withAmountOfCards: anAmountOfCards [
+DeterministicDeckStrategy class >> using: aSequence withSize: anAmountOfCards [
 	^ self new initializeUsing: aSequence withAmountOfCards: anAmountOfCards 
 ]
 

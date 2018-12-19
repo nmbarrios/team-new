@@ -26,7 +26,7 @@ EffectTest >> testPlayerActivateAtomicBombEffect [
 	deck:= self deckWithOverloadCard.
 	board := Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			AtomicBombEffect new}.
 	matias := Player named: 'Matias'.
@@ -74,7 +74,7 @@ EffectTest >> testPlayerActivatesGetCardEffect [
 		andAmountOfCards: 50.
 	board := Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			DealCardEffect new}.
 	matias := Player named: 'Matias'.
@@ -107,7 +107,7 @@ EffectTest >> testPlayerActivatesMoonWalkAndLosesMoreThanOneLap [
 	deck:= self deckWithOverloadCard.
 	board := Board
 		withSpaces: 5
-		andDeterministicEffectsGeneratedFrom: {(MoonWalkEffect moving: 7)}.
+		andEffectsGeneratedFrom: {(MoonWalkEffect moving: 7)}.
 	matias := Player named: 'Matias'.
 	fabio := Player named: 'Fabio'.
 	players := OrderedCollection with: matias with: fabio.
@@ -131,7 +131,7 @@ EffectTest >> testPlayerActivatesMoonWalkEffect [
 	deck:= self deckWithOverloadCard.
 	board := Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			(MoonWalkEffect moving: 1)}.
 	matias := Player named: 'Matias'.
@@ -165,7 +165,7 @@ EffectTest >> testPlayerActivatesSpeedUpEffect [
 	deck:= self deckWithOverloadCard.
 	board := Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			SpeedUpEffect new}.
 	matias := Player named: 'Matias'.
@@ -188,7 +188,7 @@ EffectTest >> testPlayerActivatesWormHoleEffect [
 	deck:= self deckWithOverloadCard.
 	board := Board
 		withSpaces: 10
-		andDeterministicEffectsGeneratedFrom:
+		andEffectsGeneratedFrom:
 			{NoEffect new.
 			WormHoleEffect new}.
 	matias := Player named: 'Matias'.
