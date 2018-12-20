@@ -40,7 +40,9 @@ Deck class >> randomWithAmountOfCards: anAmountOfCards [
 
 { #category : #dealing }
 Deck >> dealCard [
-	^ cards remove: (cards firstIfAbsent: [ MatchException signal: 'There is no cards in the deck' ])
+	cards isEmpty
+		ifTrue: [ MatchException signal: 'There is no cards in the deck' ].
+	^ cards removeFirst
 ]
 
 { #category : #generating }

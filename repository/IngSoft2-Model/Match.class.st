@@ -85,8 +85,27 @@ Match >> changeTurn [
 ]
 
 { #category : #playing }
+Match >> dealCardFromShuffledDeckTo: aPlayer [
+	^ [ deck generatedFrom: discardDeck shuffled.
+	self dealCardTo: aPlayer ]
+		on: MatchException
+		do: [  ]
+]
+
+{ #category : #playing }
 Match >> dealCardTo: aPlayer [
 	(playersCards at: aPlayer ifAbsent: [ playersCards add: aPlayer -> OrderedCollection new ]) add: deck dealCard
+]
+
+{ #category : #playing }
+Match >> dealInitialHandTo: player [
+	playersCards at: player put: OrderedCollection new.
+	[ (playersCards at: player) add: deck dealCard ]
+		on: MatchException
+		do: [  ].
+	^ [ (playersCards at: player) add: deck dealCard ]
+		on: MatchException
+		do: [  ]
 ]
 
 { #category : #accessing }
@@ -106,15 +125,8 @@ Match >> initializePlayedBy: thePlayers throwing: theDices during: aNumberOfLaps
 	positionOfPlayers := Dictionary new.
 	cardsActivated := Dictionary new.
 	playersCards := Dictionary new.
-	players
-		do: [ :player | 
-			playersCards at: player put: OrderedCollection new.
-			[ (playersCards at: player) add: deck dealCard ]
-				on: MatchException
-				do: [  ].
-			[ (playersCards at: player) add: deck dealCard ]
-				on: MatchException
-				do: [  ] ].
+	players do:
+		[ :player | self dealInitialHandTo: player ].
 	lastCard := NoneCard new.
 	lastEffect := players first -> NoEffect new
 ]
@@ -205,12 +217,13 @@ Match >> playedBy: aPlayer [
 	self assertIsPlaying: aPlayer.
 	self assertMatchHasEnded.
 	self move: aPlayer.
-	[ board applyEffectOf: (self positionOf: aPlayer) currentSpace in: self activatedBy: aPlayer ]
+	[ board
+		applyEffectOf: (self positionOf: aPlayer) currentSpace
+		in: self
+		activatedBy: aPlayer ]
 		on: MatchException
-		do: [ [ self shuffleDiscardDeck.
-			self dealCardTo: aPlayer ]
-				on: MatchException
-				do: [  ] ].
+		do:
+			[ self dealCardFromShuffledDeckTo: aPlayer ].
 	self changeTurn
 ]
 
@@ -239,11 +252,6 @@ Match >> remove: aCard fromHandOf: aPlayer [
 { #category : #removing }
 Match >> removeActivated: card [
 	cardsActivated removeKey: card ifAbsent: [ MatchException signal: 'There is not a ' , card className , ' activated' ]
-]
-
-{ #category : #playing }
-Match >> shuffleDiscardDeck [
-	deck generatedFrom: (discardDeck shuffled)
 ]
 
 { #category : #playing }
